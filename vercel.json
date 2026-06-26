@@ -1,22 +1,9 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "api/webhook.js",
-      "use": "@vercel/node"
+  "functions": {
+    "api/webhook.js": {
+      "memory": 256,
+      "maxDuration": 30
     }
-  ],
-  "routes": [
-    {
-      "src": "/api/webhook",
-      "dest": "/api/webhook.js"
-    },
-    {
-      "src": "/",
-      "dest": "/api/webhook.js"
-    }
-  ],
-  "env": {
-    "NODE_ENV": "production"
   }
 }
