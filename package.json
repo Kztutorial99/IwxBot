@@ -1,0 +1,21 @@
+{
+  "name": "vulnscan-telegram-bot",
+  "version": "1.0.0",
+  "description": "Professional Telegram bot for web vulnerability scanning, analysis, and reporting",
+  "main": "bot.js",
+  "scripts": {
+    "start": "node bot.js",
+    "dev": "node bot.js",
+    "build": "echo 'No build step required'"
+  },
+  "keywords": ["telegram", "bot", "security", "vulnerability", "scanner"],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.6.0",
+    "node-telegram-bot-api": "^0.64.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
