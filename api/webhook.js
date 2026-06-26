@@ -1,4 +1,5 @@
 // Vercel Serverless Function - Telegram Webhook Handler
+const crypto = require('crypto');
 const TelegramBot = require('node-telegram-bot-api');
 const { fullScan, checkHttpHeaders, checkSsl, checkSqlInjection, checkXss, checkCors, checkOpenRedirect, normalizeUrl } = require('../lib/scanner');
 const { mainMenu, scanMenu, modulesMenu, backToMain } = require('../lib/keyboards');
@@ -9,6 +10,7 @@ const {
 } = require('../lib/messages');
 
 const TOKEN = process.env.TELEGRAM_BOT_TOKEN;
+const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET || '';
 const bot = new TelegramBot(TOKEN);
 
 // In-memory store (stateless per request — use Redis/DB for production)
@@ -207,6 +209,18 @@ async function handleCallbackQuery(query) {
 module.exports = async (req, res) => {
   if (req.method !== 'POST') {
     return res.status(200).json({ status: 'VulnScan Bot is running.' });
+  }
+
+  // Validate Telegram secret token header (set when registering webhook)
+  if (WEBHOOK_SECRET) {
+    const incoming = req.headers['x-telegram-bot-api-secret-token'] || '';
+    const expected = crypto
+      .createHmac('sha256', 'WebHook')
+      .update(WEBHOOK_SECRET)
+      .digest('hex');
+    if (!crypto.timingSafeEqual(Buffer.from(incoming), Buffer.from(expected))) {
+      return res.status(403).json({ error: 'Forbidden' });
+    }
   }
 
   try {
